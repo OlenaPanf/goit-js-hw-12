@@ -20,7 +20,7 @@ formElem.addEventListener('submit', onFormSubmit);
 async function onFormSubmit(event) {
   event.preventDefault();
   hideLoadMore();
-  //showLoader();
+  showLoader();
   query = formElem.elements.query.value.trim(); //отримую що ввів користувач
   gallery.innerHTML = ''; //очищаю попередню розмітку. Навіть якщо її немає, видаляю все старе
   currentPage = 1; // щоб при новому запиті завжди показувало спочатку першу сторінку
@@ -38,7 +38,6 @@ async function onFormSubmit(event) {
     return;
   }
   try {
-    showLoader();
     const data = await getImage(query, currentPage); //посилаю кур'єра за новими даними, чекаю кур'єра, коли кур'єр повертається з даними data
     maxPage = Math.ceil(data.totalHits / perPage);
     if (data.hits.length === 0) {
@@ -124,7 +123,7 @@ function myScroll() {
   const height = gallery.firstChild.getBoundingClientRect().height;
 
   scrollBy({
-    top: height,
+    top: height * 2,
     behavior: 'smooth',
   });
 }
