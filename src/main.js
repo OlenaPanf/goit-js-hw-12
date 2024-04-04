@@ -34,7 +34,7 @@ async function onFormSubmit(event) {
       height: '88px',
       position: 'topRight',
     });
-    //hideLoader();
+    hideLoader();
     return;
   }
   try {
