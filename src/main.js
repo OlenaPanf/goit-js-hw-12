@@ -19,7 +19,8 @@ const perPage = 15;
 formElem.addEventListener('submit', onFormSubmit);
 async function onFormSubmit(event) {
   event.preventDefault();
-  //hideLoadMore;
+  hideLoadMore();
+  //showLoader();
   query = formElem.elements.query.value.trim(); //отримую що ввів користувач
   gallery.innerHTML = ''; //очищаю попередню розмітку. Навіть якщо її немає, видаляю все старе
   currentPage = 1; // щоб при новому запиті завжди показувало спочатку першу сторінку
@@ -33,32 +34,58 @@ async function onFormSubmit(event) {
       height: '88px',
       position: 'topRight',
     });
+    //hideLoader();
     return;
   }
   try {
+    showLoader();
     const data = await getImage(query, currentPage); //посилаю кур'єра за новими даними, чекаю кур'єра, коли кур'єр повертається з даними data
     maxPage = Math.ceil(data.totalHits / perPage);
-    renderGallery(data.hits); //дані data відмальовую на сторінці
+    if (data.hits.length === 0) {
+      iziToast.error({
+        message:
+          'Sorry, there are no images matching your search query. Please try again!',
+        theme: 'dark',
+        progressBarColor: '#FFFFFF',
+        color: '#EF4040',
+        position: 'topRight',
+      });
+    } else {
+      renderGallery(data.hits); //дані data відмальовую на сторінці
+      checkBtnStatus();
+    }
   } catch (error) {
     console.error('Error fetching images:', error);
     iziToast.error({
       title: 'Error',
       message: 'Failed to fetch images. Please try again later.',
-      position: 'topCenter',
+      position: 'topRight',
     });
-  } finally {
-    hideLoader();
   }
 
-  checkBtnStatus();
+  hideLoader();
   formElem.reset();
 }
 //=====================================================
 loadMoreBtn.addEventListener('click', onLoadMoreClick);
 async function onLoadMoreClick() {
   currentPage += 1;
-  const data = await getImage(query, currentPage); //посилаю кур'єра за новими даними, чекаю кур'єра, коли кур'єр повертається з даними data
-  renderGallery(data.hits); //дані data відмальовую на сторінці
+  hideLoadMore();
+  showLoader();
+  try {
+    const data = await getImage(query, currentPage); //посилаю кур'єра за новими даними, чекаю кур'єра, коли кур'єр повертається з даними data
+    renderGallery(data.hits); //дані data відмальовую на сторінці
+  } catch (error) {
+    console.error('Error fetching images:', error);
+    iziToast.error({
+      title: 'Error',
+      message: 'Failed to fetch images. Please try again later.',
+      position: 'topRight',
+    });
+  }
+
+  hideLoader();
+  myScroll();
   checkBtnStatus();
 }
 //=====================================================
@@ -73,6 +100,13 @@ function hideLoadMore() {
 function checkBtnStatus() {
   if (currentPage >= maxPage) {
     hideLoadMore();
+    iziToast.info({
+      message: "We're sorry, but you've reached the end of search results.",
+      theme: 'dark',
+      progressBarColor: '#FFFFFF',
+      color: 'blue',
+      position: 'topRight',
+    });
   } else {
     showLoadMore();
   }
@@ -85,5 +119,13 @@ function hideLoader() {
   loader.classList.add('is-hidden');
 }
 
-// =====================================================
+// ===================================================
+function myScroll() {
+  const height = gallery.firstChild.getBoundingClientRect().height;
+
+  scrollBy({
+    top: height,
+    behavior: 'smooth',
+  });
+}
 //====================================================
