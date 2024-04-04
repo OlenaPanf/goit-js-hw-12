@@ -17,13 +17,14 @@ let maxPage = 0;
 const perPage = 15;
 //====================================================
 formElem.addEventListener('submit', onFormSubmit);
+
 async function onFormSubmit(event) {
   event.preventDefault();
   hideLoadMore();
   showLoader();
-  query = formElem.elements.query.value.trim(); //отримую що ввів користувач
-  gallery.innerHTML = ''; //очищаю попередню розмітку. Навіть якщо її немає, видаляю все старе
-  currentPage = 1; // щоб при новому запиті завжди показувало спочатку першу сторінку
+  query = formElem.elements.query.value.trim();
+  gallery.innerHTML = '';
+  currentPage = 1;
 
   if (query === '') {
     iziToast.error({
@@ -38,7 +39,7 @@ async function onFormSubmit(event) {
     return;
   }
   try {
-    const data = await getImage(query, currentPage); //посилаю кур'єра за новими даними, чекаю кур'єра, коли кур'єр повертається з даними data
+    const data = await getImage(query, currentPage);
     maxPage = Math.ceil(data.totalHits / perPage);
     if (data.hits.length === 0) {
       iziToast.error({
@@ -50,7 +51,7 @@ async function onFormSubmit(event) {
         position: 'topRight',
       });
     } else {
-      renderGallery(data.hits); //дані data відмальовую на сторінці
+      renderGallery(data.hits);
       checkBtnStatus();
     }
   } catch (error) {
@@ -67,13 +68,14 @@ async function onFormSubmit(event) {
 }
 //=====================================================
 loadMoreBtn.addEventListener('click', onLoadMoreClick);
+
 async function onLoadMoreClick() {
   currentPage += 1;
   hideLoadMore();
   showLoader();
   try {
-    const data = await getImage(query, currentPage); //посилаю кур'єра за новими даними, чекаю кур'єра, коли кур'єр повертається з даними data
-    renderGallery(data.hits); //дані data відмальовую на сторінці
+    const data = await getImage(query, currentPage);
+    renderGallery(data.hits);
   } catch (error) {
     console.error('Error fetching images:', error);
     iziToast.error({
