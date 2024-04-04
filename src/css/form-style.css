@@ -95,3 +95,30 @@ h3 {
 p {
   font: 400 12px / 2 'Montserrat', sans-serif;
 }
+
+.load-more-btn {
+  display: flex;
+  justify-content: center;
+  border-radius: 8px;
+  padding: 8px 16px;
+  width: 125px;
+  height: 40px;
+  margin-top: 32px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #4e75ff;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 150%;
+  letter-spacing: 0.04em;
+  color: #fff;
+  border: transparent;
+}
+
+/*.is-hidden {
+  display: none;
+}*/
+.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
